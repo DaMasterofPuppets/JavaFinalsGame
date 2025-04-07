@@ -26,7 +26,7 @@ public class GamePanel extends JPanel
         add(timerLabel, BorderLayout.NORTH);
 
         // Scene Image
-        JLabel sceneImage = new JLabel(new ImageIcon("scene1.gif")); // replace with your own image/gif
+        JLabel sceneImage = new JLabel(new ImageIcon("scene1.png")); // replace with your own image/gif
         sceneImage.setLayout(new BorderLayout());
         add(sceneImage, BorderLayout.CENTER);
 

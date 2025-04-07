@@ -29,7 +29,7 @@ public class SceneManager {
     private void defineScenes() {
         createDialogueSeries("Act1_Dialogue_", 5, () -> nextScene("ChoiceScene1"));
 
-        cardPanel.add(new ChoiceScene(mainApp, "/images/scene1.png",
+        cardPanel.add(new ChoiceScene(mainApp, "images/scene1.png",
                 new String[]{"Look Behind You", "Move Forward"},
                 new Runnable[]{
                         () -> nextScene("ExtraAct1"),
@@ -38,7 +38,7 @@ public class SceneManager {
 
         createDialogueSeries("Act2_Dialogue_", 10, () -> nextScene("ChoiceScene2"));
 
-        cardPanel.add(new ChoiceScene(mainApp, "/images/scene2.png",
+        cardPanel.add(new ChoiceScene(mainApp, "images/scene2.png",
                 new String[]{"Trust Him", "Don't Trust Him"},
                 new Runnable[]{
                         () -> nextScene("Act3_Dialogue_0"),
@@ -47,7 +47,7 @@ public class SceneManager {
 
         createDialogueSeries("Act3_Dialogue_", 5, () -> nextScene("ChoiceScene3"));
 
-        cardPanel.add(new ChoiceScene(mainApp, "/images/scene3.png",
+        cardPanel.add(new ChoiceScene(mainApp, "images/scene3.png",
                 new String[]{"Yell For Help", "Push The Man", "Follow The Light"},
                 new Runnable[]{
                         () -> nextScene("Act3_Dialogue_0"),
@@ -57,7 +57,7 @@ public class SceneManager {
 
         createDialogueSeries("Act4_Dialogue_", 10, () -> nextScene("ChoiceScene4"));
 
-        cardPanel.add(new ChoiceScene(mainApp, "/images/scene4.png",
+        cardPanel.add(new ChoiceScene(mainApp, "images/scene4.png",
                 new String[]{"Carry Him", "Leave Him Alone"},
                 new Runnable[]{
                         () -> nextScene("Act5_Dialogue_0"),
@@ -68,7 +68,7 @@ public class SceneManager {
 
         createDialogueSeries("ExtraAct2_Dialogue_", 5, () -> nextScene("ExtraAct2Choice"));
 
-        cardPanel.add(new ChoiceScene(mainApp, "/images/extraact2.png",
+        cardPanel.add(new ChoiceScene(mainApp, "images/extraact2.png",
                 new String[]{"Ask For Help", "Hide"},
                 new Runnable[]{
                         () -> nextScene("EndSceneD"),
@@ -76,16 +76,16 @@ public class SceneManager {
                 }), "ExtraAct2Choice");
 
         // Win, Lose, Endings
-        cardPanel.add(createEndScene("/images/win_scene.png"), "WinEndScene");
-        cardPanel.add(createEndScene("/images/ending_d.png"), "EndSceneD");
-        cardPanel.add(createEndScene("/images/ending_p.png"), "EndSceneP");
+        cardPanel.add(createEndScene("images/win_scene.png"), "WinEndScene");
+        cardPanel.add(createEndScene("images/ending_d.png"), "EndSceneD");
+        cardPanel.add(createEndScene("images/ending_p.png"), "EndSceneP");
     }
 
     private void createDialogueSeries(String baseKey, int count, Runnable nextSceneAction) {
         for (int i = 0; i < count; i++) {
             final int idx = i;
             Runnable next = (i == count - 1) ? nextSceneAction : () -> nextScene(baseKey + (idx + 1));
-            GameScene scene = new GameScene(mainApp, "/images/" + baseKey + idx + ".png", next);
+            GameScene scene = new GameScene(mainApp, "images/" + baseKey + idx + ".png", next);
             cardPanel.add(scene, baseKey + idx);
         }
     }

@@ -3,9 +3,9 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.sound.sampled.*;
 import java.io.File;
+import java.net.URL;
 
 public class TitleScreen {
-
     private final AudioManager audioManager = AudioManager.getInstance();
     private JFrame frame;
     private JPanel cardPanel;
@@ -65,7 +65,7 @@ public class TitleScreen {
         cardPanel.add(gameOverPanel, "GameOver");
 
         // SceneManager setup
-        sceneManager = new SceneManager(this, cardPanel, cardLayout); // ✅
+        sceneManager = new SceneManager(this, cardPanel, cardLayout);
 
         frame.setContentPane(cardPanel);
         frame.setVisible(true);
@@ -76,7 +76,7 @@ public class TitleScreen {
     private JPanel createTitlePanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        JLabel background = createFullScreenBackground("background.jpg");
+        JLabel background = createFullScreenBackground("images/background.jpg");
         panel.add(background, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
@@ -108,8 +108,7 @@ public class TitleScreen {
         startButton.addActionListener(e -> {
             audioManager.stop();
             audioManager.playMusic("game_music.wav", true);
-            sceneManager.startGame(); // Start from Act 1 Scene 1
-            cardLayout.show(cardPanel, "SceneManager");
+            sceneManager.startGame();
         });
 
         howToPlayButton.addActionListener(e -> cardLayout.show(cardPanel, "HowToPlay"));
@@ -121,7 +120,7 @@ public class TitleScreen {
 
     private JPanel createCreditsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        JLabel background = createFullScreenBackground("credits_background.png");
+        JLabel background = createFullScreenBackground("images/credits_background.png");
         panel.add(background, BorderLayout.CENTER);
 
         JButton backButton = new JButton("Back to Menu");
@@ -138,7 +137,7 @@ public class TitleScreen {
 
     private JPanel createHTPPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        JLabel background = createFullScreenBackground("howtoplay_background.png");
+        JLabel background = createFullScreenBackground("images/howtoplay_background.png");
         panel.add(background, BorderLayout.CENTER);
 
         JButton backButton = new JButton("Back to Menu");
@@ -154,7 +153,19 @@ public class TitleScreen {
     }
 
     public static JLabel createFullScreenBackground(String imagePath) {
-        ImageIcon icon = new ImageIcon(imagePath);
+        URL location = TitleScreen.class.getClassLoader().getResource(imagePath);
+
+        if (location == null) {
+            System.err.println("❌ ERROR: Image not found: " + imagePath);
+            JLabel errorLabel = new JLabel("Image not found: " + imagePath);
+            errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            errorLabel.setVerticalAlignment(SwingConstants.CENTER);
+            errorLabel.setFont(new Font("Arial", Font.BOLD, 24));
+            errorLabel.setForeground(Color.RED);
+            return errorLabel;
+        }
+
+        ImageIcon icon = new ImageIcon(location);
         Image scaledImage = icon.getImage().getScaledInstance(
                 Toolkit.getDefaultToolkit().getScreenSize().width,
                 Toolkit.getDefaultToolkit().getScreenSize().height,
