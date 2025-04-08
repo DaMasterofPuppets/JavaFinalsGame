@@ -9,24 +9,27 @@ public class SceneManager {
     private JPanel cardPanel;
     private CardLayout cardLayout;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
-    private int sceneCounter = 0;
 
-    public SceneManager(TitleScreen mainApp, JPanel cardPanel, CardLayout cardLayout) {
+    public SceneManager(TitleScreen mainApp, JPanel cardPanel, CardLayout cardLayout)
+    {
         this.mainApp = mainApp;
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
         defineScenes();
     }
 
-    public void startGame() {
+    public void startGame()
+    {
         nextScene("Act1_Dialogue_0");
     }
 
-    public void nextScene(String key) {
+    public void nextScene(String key)
+    {
         cardLayout.show(cardPanel, key);
     }
 
-    private void defineScenes() {
+    private void defineScenes()
+    {
         createDialogueSeries("Act1_Dialogue_", 5, () -> nextScene("ChoiceScene1"));
 
         cardPanel.add(new ChoiceScene(mainApp, "images/scene1.png",
@@ -35,6 +38,8 @@ public class SceneManager {
                         () -> nextScene("ExtraAct1"),
                         () -> nextScene("Act2_Dialogue_0")
                 }), "ChoiceScene1");
+
+        cardPanel.add(createExtraAct1Scene(), "ExtraAct1");
 
         createDialogueSeries("Act2_Dialogue_", 10, () -> nextScene("ChoiceScene2"));
 
@@ -55,7 +60,7 @@ public class SceneManager {
                         () -> nextScene("Act4_Dialogue_0")
                 }), "ChoiceScene3");
 
-        createDialogueSeries("Act4_Dialogue_", 10, () -> nextScene("ChoiceScene4"));
+        createDialogueSeries("Act4_Dialogue_", 5, () -> nextScene("ChoiceScene4"));
 
         cardPanel.add(new ChoiceScene(mainApp, "images/scene4.png",
                 new String[]{"Carry Him", "Leave Him Alone"},
@@ -66,7 +71,7 @@ public class SceneManager {
 
         createDialogueSeries("Act5_Dialogue_", 20, () -> nextScene("WinEndScene"));
 
-        createDialogueSeries("ExtraAct2_Dialogue_", 5, () -> nextScene("ExtraAct2Choice"));
+        createDialogueSeries("ExtraAct2_Dialogue_", 3, () -> nextScene("ExtraAct2Choice"));
 
         cardPanel.add(new ChoiceScene(mainApp, "images/extraact2.png",
                 new String[]{"Ask For Help", "Hide"},
@@ -75,10 +80,9 @@ public class SceneManager {
                         () -> nextScene("EndSceneP")
                 }), "ExtraAct2Choice");
 
-        // Win, Lose, Endings
         cardPanel.add(createEndScene("images/win_scene.png"), "WinEndScene");
-        cardPanel.add(createEndScene("images/ending_d.png"), "EndSceneD");
-        cardPanel.add(createEndScene("images/ending_p.png"), "EndSceneP");
+        cardPanel.add(createEndScene("images/ending_d.gif"), "EndSceneD");
+        cardPanel.add(createEndScene("images/ending_p.gif"), "EndSceneP");
     }
 
     private void createDialogueSeries(String baseKey, int count, Runnable nextSceneAction) {
@@ -90,9 +94,11 @@ public class SceneManager {
         }
     }
 
-    private JPanel createEndScene(String imagePath) {
+    private JPanel createEndScene(String imagePath)
+    {
         JPanel panel = new JPanel(new BorderLayout());
-        JLabel background = mainApp.createFullScreenBackground(imagePath);
+        JLabel background = new JLabel(new ImageIcon(getClass().getClassLoader().getResource(imagePath)));
+        background.setLayout(new BorderLayout());
         panel.add(background, BorderLayout.CENTER);
 
         JButton backButton = new JButton("Back to Menu");
@@ -104,6 +110,23 @@ public class SceneManager {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 50));
         buttonPanel.add(backButton);
 
+        background.add(buttonPanel, BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    private JPanel createExtraAct1Scene() {
+        JPanel panel = new JPanel(new BorderLayout());
+        JLabel background = mainApp.createFullScreenBackground("images/extraact1.png");
+        panel.add(background, BorderLayout.CENTER);
+
+        JButton returnButton = new JButton("Return");
+        mainApp.styleButton(returnButton, Color.BLACK);
+        returnButton.addActionListener(e -> nextScene("ChoiceScene1"));
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 50));
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(returnButton);
         background.add(buttonPanel, BorderLayout.SOUTH);
 
         return panel;

@@ -1,86 +1,50 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class GamePanel extends JPanel
 {
-
-    private final AudioManager audioManager = AudioManager.getInstance();
-
     private TitleScreen mainApp;
+    private int timeLeft = 300;
     private JLabel timerLabel;
-    private Timer countdownTimer;
-    private int timeLeft = 30; // seconds
 
-    public GamePanel(TitleScreen mainApp) {
+    public GamePanel(TitleScreen mainApp)
+    {
         this.mainApp = mainApp;
         setLayout(new BorderLayout());
 
-        // Timer Label
-        timerLabel = new JLabel("Time left: " + timeLeft + "s");
+        timerLabel = new JLabel("05:00");
         timerLabel.setFont(new Font("Arial", Font.BOLD, 28));
-        timerLabel.setForeground(Color.RED);
-        timerLabel.setHorizontalAlignment(JLabel.CENTER);
+        timerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        timerLabel.setForeground(Color.WHITE);
+        timerLabel.setOpaque(true);
+        timerLabel.setBackground(new Color(0, 0, 0, 150));
+        timerLabel.setPreferredSize(new Dimension(100, 40));
         add(timerLabel, BorderLayout.NORTH);
 
-        // Scene Image
-        JLabel sceneImage = new JLabel(new ImageIcon("scene1.png")); // replace with your own image/gif
-        sceneImage.setLayout(new BorderLayout());
-        add(sceneImage, BorderLayout.CENTER);
-
-        // Buttons Panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 20));
-        buttonPanel.setOpaque(false);
-
-
-        JButton choice1 = new JButton("Choice 1");
-        JButton choice2 = new JButton("Choice 2");
-        mainApp.styleButton(choice1, Color.BLACK);
-        mainApp.styleButton(choice2, Color.BLACK);
-
-        buttonPanel.add(choice1);
-        buttonPanel.add(choice2);
-
-        sceneImage.add(buttonPanel, BorderLayout.SOUTH);
-
-        // Choice button actions
-        choice1.addActionListener(e -> {
-            stopTimer();
-            // TODO: Add transition to another scene
-            JOptionPane.showMessageDialog(mainApp.getFrame(), "Next Scene: You chose 1!");
-        });
-
-        choice2.addActionListener(e -> {
-            stopTimer();
-            mainApp.showGameOver(); // Simulate bad choice = game over
-        });
-
-        startTimer();
+        startCountdown();
     }
 
-    private void startTimer()
+    private void startCountdown()
     {
-        countdownTimer = new Timer();
-        countdownTimer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                SwingUtilities.invokeLater(() -> {
+        Timer timer = new Timer(1000, new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                int minutes = timeLeft / 60;
+                int seconds = timeLeft % 60;
+                timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
+                if (timeLeft <= 0)
+                {
+                    ((Timer) e.getSource()).stop();
+                    mainApp.showGameOver();
+                } else
+                {
                     timeLeft--;
-                    timerLabel.setText("Time left: " + timeLeft + "s");
-                    if (timeLeft <= 0)
-                    {
-                        stopTimer();
-                        mainApp.showGameOver();
-                    }
-                });
+                }
             }
-        }, 1000, 1000);
-    }
-
-    private void stopTimer() {
-        if (countdownTimer != null) {
-            countdownTimer.cancel();
-        }
+        });
+        timer.setInitialDelay(0);
+        timer.start();
     }
 }

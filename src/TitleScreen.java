@@ -1,11 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.sound.sampled.*;
-import java.io.File;
 import java.net.URL;
 
-public class TitleScreen {
+public class TitleScreen
+{
     private final AudioManager audioManager = AudioManager.getInstance();
     private JFrame frame;
     private JPanel cardPanel;
@@ -31,17 +30,20 @@ public class TitleScreen {
         cardLayout.show(cardPanel, "GameOver");
     }
 
-    public void showTitleScreen() {
-        audioManager.stop(); // Stop current music
-        audioManager.playMusic("AUDIO.wav", true); // Play title music
+    public void showTitleScreen()
+    {
+        audioManager.stop();
+        audioManager.playMusic("bg_audio.wav", true);
         cardLayout.show(cardPanel, "Title");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         SwingUtilities.invokeLater(() -> new TitleScreen().createAndShowGUI());
     }
 
-    private void createAndShowGUI() {
+    private void createAndShowGUI()
+    {
         frame = new JFrame("Horror Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -64,13 +66,12 @@ public class TitleScreen {
         cardPanel.add(gamePanel, "Game");
         cardPanel.add(gameOverPanel, "GameOver");
 
-        // SceneManager setup
         sceneManager = new SceneManager(this, cardPanel, cardLayout);
 
         frame.setContentPane(cardPanel);
         frame.setVisible(true);
 
-        audioManager.playMusic("AUDIO.wav", true); // Play title music initially
+        audioManager.playMusic("bg_audio.wav", true);
     }
 
     private JPanel createTitlePanel() {
@@ -152,11 +153,13 @@ public class TitleScreen {
         return panel;
     }
 
-    public static JLabel createFullScreenBackground(String imagePath) {
+    public static JLabel createFullScreenBackground(String imagePath)
+    {
         URL location = TitleScreen.class.getClassLoader().getResource(imagePath);
 
-        if (location == null) {
-            System.err.println("❌ ERROR: Image not found: " + imagePath);
+        if (location == null)
+        {
+            System.err.println("Image not found: " + imagePath);
             JLabel errorLabel = new JLabel("Image not found: " + imagePath);
             errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
             errorLabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -176,7 +179,8 @@ public class TitleScreen {
         return label;
     }
 
-    public void styleButton(JButton button, Color color) {
+    public void styleButton(JButton button, Color color)
+    {
         button.setFont(new Font("Arial", Font.BOLD, 24));
         button.setPreferredSize(new Dimension(250, 60));
         button.setBackground(color);

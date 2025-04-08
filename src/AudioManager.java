@@ -1,39 +1,39 @@
 import javax.sound.sampled.*;
-import java.io.File;
-import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
 
-public class AudioManager {
+public class AudioManager
+{
     private static AudioManager instance;
-    private Clip clip;
-    private String currentlyPlaying = "";
+    private Clip currentClip;
+    private final HashMap<String, Clip> loadedClips = new HashMap<>();
 
     private AudioManager() {}
 
-    public static synchronized AudioManager getInstance() {
+    public static AudioManager getInstance() {
         if (instance == null) {
             instance = new AudioManager();
         }
         return instance;
     }
 
-    public synchronized void playMusic(String filePath, boolean loop) {
-        if (filePath.equals(currentlyPlaying)) {
-            return; // Don't restart if already playing this track
-        }
+    public void playMusic(String filename, boolean loop) {
+        stop();
 
-        stop(); // Stop whatever is playing
-
-        try {
-            File audioFile = new File(filePath);
-            if (!audioFile.exists()) {
-                System.err.println("Audio file not found: " + filePath);
+        try
+        {
+            URL soundURL = getClass().getClassLoader().getResource("music/" + filename);
+            if (soundURL == null)
+            {
+                System.err.println("file not found: music/" + filename);
                 return;
             }
 
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-            clip = AudioSystem.getClip();
+            System.out.println("Loaded audio: " + soundURL);
+
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundURL);
+            Clip clip = AudioSystem.getClip();
             clip.open(audioStream);
-            currentlyPlaying = filePath;
 
             if (loop) {
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -41,21 +41,32 @@ public class AudioManager {
                 clip.start();
             }
 
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            System.err.println("Error playing audio: " + e.getMessage());
+            currentClip = clip;
+            loadedClips.put(filename, clip);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public synchronized void stop() {
-        if (clip != null) {
-            clip.stop();
-            clip.close();
-            clip = null;
-            currentlyPlaying = "";
+    public void stop()
+    {
+        if (currentClip != null && currentClip.isRunning()) {
+            currentClip.stop();
+            currentClip.close();
         }
     }
 
-    public synchronized boolean isPlaying() {
-        return clip != null && clip.isRunning();
+    public void pause()
+    {
+        if (currentClip != null && currentClip.isRunning()) {
+            currentClip.stop();
+        }
+    }
+
+    public void resume()
+    {
+        if (currentClip != null) {
+            currentClip.start();
+        }
     }
 }

@@ -12,7 +12,8 @@ public class ChoiceScene extends JPanel {
         buttonPanel.setOpaque(false);
         buttonPanel.setLayout(new GridLayout(choices.length, 1, 10, 10));
 
-        for (int i = 0; i < choices.length; i++) {
+        for (int i = 0; i < choices.length; i++)
+        {
             JButton button = new JButton(choices[i]);
             mainApp.styleButton(button, Color.BLACK);
             int index = i;
